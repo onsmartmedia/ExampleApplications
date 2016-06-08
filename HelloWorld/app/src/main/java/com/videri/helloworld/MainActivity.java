@@ -1,11 +1,28 @@
+/*
+ * MainActivity.java
+ * HelloWorld Application Sample
+ * 1.5.0
+ *
+ * Copyright 2016 Videri Inc.
+ *
+ * Unless required by applicable law or agreed to in writing by both parties,
+ * this sample software is distributed on an "AS IS" AND "AS AVAILABLE" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ */
+
+
+
 package com.videri.helloworld;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 
-
-public class MainActivity extends AppCompatActivity {
+/**
+ * This is the main activity for the application. It displays "Hello World!" letters on the screen.
+ */
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
