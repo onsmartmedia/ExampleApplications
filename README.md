@@ -1,3 +1,3 @@
-Example Projects
+Example Applications
 =========
-This repo is created to demostrate example projects run on our VLE enviroment. 
+This repo is created to demostrate example applications run on the VLE enviroment. 

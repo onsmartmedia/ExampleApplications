@@ -1,7 +1,7 @@
-/*
+/**
  * MainActivity.java
  * HelloWorld Application Sample
- * 1.5.0
+ * 1.0.0
  *
  * Copyright 2016 Videri Inc.
  *
@@ -20,7 +20,8 @@ import android.os.Bundle;
 
 
 /**
- * This is the main activity for the application. It displays "Hello World!" letters on the screen.
+ * This is the main activity for the application.
+ * It displays "Hello World!" letters on the screen.
  */
 public class MainActivity extends Activity {
 

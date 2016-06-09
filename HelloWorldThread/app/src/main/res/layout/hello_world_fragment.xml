@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HelloWorldFragment">
+
+    <ImageView
+        android:layout_width="1080px"
+        android:layout_height="1920px"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/bg_on_smart"
+        />
+    <TextView
+        android:id="@+id/helloword_text"
+        android:layout_width="match_parent"
+        android:layout_height="960px"
+        android:gravity="center"
+        android:textSize="102sp"
+        android:textColor="@color/WHITE"
+        android:text="Hello World " />
+</FrameLayout>
