@@ -41,12 +41,11 @@ Modify/Add theme tag in HelloWorld/app/src/main/AndroidManifest.xml file
 
 > - This is only an example to create a no splash full screen theme. Dependent on the project requirements, you may create different themes.
 
-Sample Code to handle thread
+Sample Code to handle threads
 -------------
 ```
-handle all removing/pausing thread in onPause. 
-Ex: timer, renter code hereunnable, thread, bus
-
+//Removing/pausing thread in onPause. 
+//Ex: timer, renter code hereunnable, thread, bus
 @Override
 protected void onPause() {
     super.onPause();
@@ -57,4 +56,19 @@ protected void onPause() {
      if(bus != null)
          bus.unregister(this);
 }
+```
+```
+
+//handle all resuming threads in onResume()
+@Override
+protected void onResume() {
+    super.onResume();
+	if(timer == null)
+         timer.start();
+    if(runnable != null)
+        handler.post(runnable);
+    if(bus != null)
+       bus.register(this);
+}
+
 ```
