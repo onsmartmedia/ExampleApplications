@@ -1,4 +1,4 @@
-/*
+/**
  * MediaPlayerFragment.java
  * Thread Application Sample
  * 1.0.0
@@ -109,7 +109,7 @@ public class MediaPlayerFragment extends Fragment {
     }
 
     /**
-     *
+     * play the video on last stop position
      */
     @Override
     public void onResume() {

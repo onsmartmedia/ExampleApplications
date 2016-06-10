@@ -18,7 +18,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.VideoView;
+
+import com.videri.helloworldthread.util.Util;
 
 /**
  * This is the MediaPlayerFragment for the application.
@@ -26,17 +29,25 @@ import android.widget.VideoView;
  */
 public class MediaPlayerFragment extends Fragment {
     private final String TAG = "MediaPlayerFragment";
-
     /**
      * A videoview displays video
      */
     private VideoView videoView;
     /**
+     * An ImageView for displaying
+     */
+    private ImageView bgImage;
+    /**
+     * An ImageView for displaying logo
+     */
+    private ImageView logoImage;
+
+    /**
      * A video file path
      */
     private String videoPath = "";
     /**
-     * An videoIndex used to play different  video
+     * A videoIndex used to play different  video
      */
     private int currentVideoIndex = 0;
     /**
@@ -54,7 +65,11 @@ public class MediaPlayerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
+        //init bgimage
+        bgImage = (ImageView)view.findViewById(R.id.bg_image);
 
+        //init logoImage
+        logoImage = (ImageView)view.findViewById(R.id.logo_image);
 
         //get a video file path
         videoPath = "android.resource://" +
@@ -88,9 +103,19 @@ public class MediaPlayerFragment extends Fragment {
     }
 
     /**
+     * initialize view data
+     */
+    private void initViewData(){
+        Util.loadImage(getActivity(),logoImage,R.drawable.logo);
+        Util.loadImage(getActivity(),bgImage,R.drawable.bg);
+    }
+
+    /**
      * Return a video path by a given index
      * @param index
-     * @return
+     *        the index determine which video to play
+     * @return a file path
+     *
      */
     private String getVideoPath(int index){
         if(index == 0 )
@@ -99,6 +124,15 @@ public class MediaPlayerFragment extends Fragment {
         else
             return "android.resource://" +
                     getActivity().getPackageName() + "/" + R.raw.hudson_yards_digital_domination;
+    }
+
+    /**
+     * Release video in memory
+     */
+    @Override
+    public void onDestroy() {
+        videoView.suspend();
+        super.onDestroy();
     }
 
     /**
@@ -117,7 +151,7 @@ public class MediaPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        initViewData();
         if(videoView != null) {
             videoView.seekTo(stopPosition);
             videoView.start();

@@ -19,7 +19,10 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.videri.helloworldthread.util.Util;
 
 /**
  * This is the HelloWorldFragment for the application.
@@ -37,12 +40,19 @@ public class HelloWorldFragment extends Fragment {
      * A TextView shows helloWorld text.
      */
     private TextView helloWorldText;
-
+    /**
+     * A background ImageView
+     */
+    private ImageView bgImage;
+    /**
+     * A thread handler
+     */
     private Handler mHandler;
     /**
      * An index displays between 0 and 99
      */
     private int currentIndex = 0;
+
     public HelloWorldFragment() {
         // Required empty public constructor
     }
@@ -51,16 +61,25 @@ public class HelloWorldFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        //Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.hello_world_fragment, container, false);
         //init textview
         helloWorldText = (TextView)view.findViewById(R.id.helloword_text);
+        //init imageView
+        bgImage = (ImageView)view.findViewById(R.id.bg_image);
         //init handler
         mHandler = new Handler();
 
         return view;
     }
 
+    /**
+     * Initialize view data
+     */
+    private void initView(){
+        //load image from drawable directory
+        Util.loadImage(getActivity(),bgImage,R.drawable.bg_on_smart);
+    }
     /**
      * A thread update the helloWorldText every second
      */
@@ -94,6 +113,8 @@ public class HelloWorldFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        initView();
         mHandler.post(TextUpdateTask);
+
     }
 }

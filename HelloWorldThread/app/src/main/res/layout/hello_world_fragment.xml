@@ -5,14 +5,11 @@
     tools:context=".HelloWorldFragment">
 
     <ImageView
+        android:id="@+id/bg_image"
         android:layout_width="1080px"
         android:layout_height="1920px"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/bg_on_smart"
-        />
+        android:gravity="bottom|center_horizontal"/>
     <TextView
         android:id="@+id/helloword_text"
         android:layout_width="match_parent"

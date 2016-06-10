@@ -2,14 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MediaPlayerFragment"
-    android:background="@drawable/bg">
+    tools:context=".MediaPlayerFragment">
+
+    <ImageView
+        android:id="@+id/bg_image"
+        android:layout_width="1080px"
+        android:layout_height="1920px"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom|center_horizontal"/>
 
     <RelativeLayout
         android:id="@+id/top_layout"
         android:layout_width="match_parent"
-        android:layout_height="960px"
-        >
+        android:layout_height="960px">
+
         <VideoView
             android:id="@+id/video"
             android:layout_marginTop="80px"
@@ -23,6 +29,7 @@
             android:layout_alignParentBottom="true"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -32,10 +39,9 @@
         android:layout_below="@+id/top_layout"
         >
         <ImageView
-            android:id="@+id/image"
+            android:id="@+id/logo_image"
             android:layout_width="653px"
             android:layout_height="387px"
-            android:src="@drawable/logo"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
 

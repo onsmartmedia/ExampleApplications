@@ -1,17 +1,18 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HelloWorldFragment">
+    tools:context=".HelloWorldActivity">
 
     <ImageView
+        android:id="@+id/bg_image"
         android:layout_width="1080px"
         android:layout_height="1920px"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/bg_on_smart"
         />
     <TextView
         android:id="@+id/helloword_text"
@@ -21,4 +22,5 @@
         android:textSize="102sp"
         android:textColor="@color/WHITE"
         android:text="Hello World " />
-</FrameLayout>
+
+</RelativeLayout>

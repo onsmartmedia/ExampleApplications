@@ -13,90 +13,113 @@
 package com.videri.helloworldcache;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+
+import com.videri.core.utils.FileUtil;
+import com.videri.helloworldcache.ui.caching.UICaching;
+
+import java.io.File;
 
 /**
- * This is the main activity for the application.
- * It switches content when it receives message from VLE.
+ * <p>
+ * The <code>MainActivity</code> is the main activity for the application.
+ * This is a handler activity.
+ * It load a ui caching file and store in <code>UICaching</code> object and
+ * load the activity's form it to determine which activity to run.
+ * </p>
  */
 public class MainActivity extends Activity {
-
     /**
-     * Key for indicating log's TAG
+     * key for log
      */
-    private final String TAG = "MainActivity";
-
+    private static final String TAG = "MainActivity";
     /**
-     * HelloWorldFragment instance for showing helloworld's content
+     * path for caching
      */
-    private HelloWorldFragment helloWorldFragment;
+    private String path ="";
     /**
-     * MediaPlayerFragment instance for showing helloworld's content
+     * The <code>UICaching</code> stores ui caching
      */
-    private MediaPlayerFragment mediaPlayerFragment;
-
-    /**
-     *An index of the fragment
-     */
-    private int frameIndex = 1;
-
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
+    private UICaching uiCaching;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        helloWorldFragment = new HelloWorldFragment();
-        mediaPlayerFragment = new MediaPlayerFragment();
-        fragmentManager = getFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(
-                R.id.content_layout,getFragment(frameIndex));
-        fragmentTransaction.commit();
-
+        //init
+        init();
 
     }
 
     /**
-     * Getting different fragment by index
-     * @param index
-     * @return
+     * Initialize caching data.
      */
-    private Fragment getFragment(int index){
-        if(index == 1)
-            return helloWorldFragment;
-        else
-            return mediaPlayerFragment;
+    private void init(){
+        if(Constants.DEBUG)
+            Log.v(TAG,"init......");
+        path = Environment.getExternalStorageDirectory() + Constants.ADAPP
+                + getString(R.string.app_name)+"/";
+        FileUtil.createDirectory(path);
+
+        uiCaching = new UICaching();
+
+    }
+
+
+    /**
+     * Start the Activity by a given activity name
+     * @param activityName
+     */
+    private void startActivity(String activityName){
+        Log.v(TAG, "package Name: " + getPackageName());
+
+        Intent intent ;
+        if(activityName.equals(HelloWorldActivity.TAG)) {
+            Log.v(TAG, "Activity name: " + HelloWorldActivity.TAG );
+            intent = new Intent(this, HelloWorldActivity.class);
+        }
+        else {
+            Log.v(TAG, "Activity name: " + VideoPlayerActivity.TAG );
+            intent = new Intent(this, VideoPlayerActivity.class);
+        }
+//        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.startActivity(intent);
+    }
+
+    /**
+     * Load ui cache data and store in the <code>UICaching</code> obejct
+     */
+    private void loadCacheData(){
+        Object object = FileUtil.loadSerializedObject(new File(path+Constants.UI_CACHING_FILE));
+        if(object != null){
+            uiCaching = (UICaching) object;
+            if(Constants.DEBUG)
+                Log.d(TAG,"Get data from caching: " + uiCaching.toString());
+            startActivity(uiCaching.getActivityName());
+        }
+        else {
+            startActivity(HelloWorldActivity.TAG);
+        }
     }
 
 
     @Override
     protected void onPause() {
         super.onPause();
-
-
+        if(Constants.DEBUG)
+            Log.v(TAG, "onPause......");
     }
 
-
-    /**
-     * switching content when it resume.
-     */
     @Override
     protected void onResume() {
         super.onResume();
+        if(Constants.DEBUG)
+            Log.v(TAG, "onResume.....");
 
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(
-                R.id.content_layout,getFragment(frameIndex));
-        fragmentTransaction.commit();
-        frameIndex++;
-        if(frameIndex>2)
-            frameIndex = 1;
+        loadCacheData();
     }
 
 
