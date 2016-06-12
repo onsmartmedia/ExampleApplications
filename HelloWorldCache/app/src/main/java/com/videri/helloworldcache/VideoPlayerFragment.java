@@ -16,6 +16,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,11 +82,13 @@ public class VideoPlayerFragment extends Fragment {
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                if(Constants.DEBUG)
+
                 currentVideoIndex++;
                 if(currentVideoIndex > 2)
                     currentVideoIndex = 0;
                 videoView.setVideoPath(getVideoPath(currentVideoIndex));
-
+                Log.v(TAG,"video ended play next: " + getVideoPath(currentVideoIndex) );
                 stopPosition = 0;
                 startActivity(new Intent(getActivity(),HelloWorldActivity.class));
             }
