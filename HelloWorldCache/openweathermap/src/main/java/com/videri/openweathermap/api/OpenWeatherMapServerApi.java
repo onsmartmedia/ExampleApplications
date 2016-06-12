@@ -59,6 +59,7 @@ public class OpenWeatherMapServerApi {
         serverInterface = retrofit.create(OpenWeatherMapServerInterface.class);
     }
 
+
     public void getZipCodeCurrentWeather(String zipCode){
         getZipCodeCurrentWeather(zipCode,apiKey);
     }

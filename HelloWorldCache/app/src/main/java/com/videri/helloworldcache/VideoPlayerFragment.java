@@ -13,7 +13,9 @@ package com.videri.helloworldcache;
 
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +35,11 @@ import com.videri.helloworldcache.util.Util;
 public class VideoPlayerFragment extends Fragment {
 
     private static final String TAG = "VideoPlayerFragment";
+
+    /**
+     * Video Index
+     */
+    private static final String VIDEO_INDEX = "VIDEO_INDEX";
 
     /**
      * A videoview displays video
@@ -56,6 +63,8 @@ public class VideoPlayerFragment extends Fragment {
      */
     private int stopPosition = 0;
 
+    private SharedPreferences sharedPref;
+
     public VideoPlayerFragment() {
         // Required empty public constructor
     }
@@ -72,24 +81,27 @@ public class VideoPlayerFragment extends Fragment {
                 getActivity().getPackageName() + "/" + R.raw.snapchat_bwy;
         //init logoImage
         logoImage = (ImageView)view.findViewById(R.id.logo_image);
-
+        //init SharedPreferences
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 
         //init videoview
         videoView = (VideoView)view.findViewById(R.id.video);
-        //assign  the video file path to the videoview
-        videoView.setVideoPath(getVideoPath(currentVideoIndex));
+
         //when video ended, play another video
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                if(Constants.DEBUG)
 
                 currentVideoIndex++;
-                if(currentVideoIndex > 2)
+                if(currentVideoIndex > 2){
                     currentVideoIndex = 0;
-                videoView.setVideoPath(getVideoPath(currentVideoIndex));
-                Log.v(TAG,"video ended play next: " + getVideoPath(currentVideoIndex) );
+                }
+                videoView.setVideoPath(getVideoPath(currentVideoIndex % 2));
+
                 stopPosition = 0;
+                if(Constants.DEBUG)
+                    Log.v(TAG,"video ended play next:  " + getVideoPath(currentVideoIndex % 2)  +" index: " + currentVideoIndex
+                            + " index % 2: " + currentVideoIndex % 2);
                 startActivity(new Intent(getActivity(),HelloWorldActivity.class));
             }
         });
@@ -127,6 +139,13 @@ public class VideoPlayerFragment extends Fragment {
                     getActivity().getPackageName() + "/" + R.raw.hudson_yards_digital_domination;
     }
 
+    private void saveSharedPreferences(){
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(VIDEO_INDEX, currentVideoIndex);
+        editor.commit();
+
+    }
+
     /**
      * Release video in memory
      */
@@ -144,6 +163,7 @@ public class VideoPlayerFragment extends Fragment {
         super.onPause();
         stopPosition = videoView.getCurrentPosition();
         videoView.pause();
+        saveSharedPreferences();
     }
 
     /**
@@ -152,8 +172,12 @@ public class VideoPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.v(TAG, "Check index onResume: " + currentVideoIndex);
         initViewData();
         if(videoView != null) {
+            currentVideoIndex = sharedPref.getInt(VIDEO_INDEX,0);
+            //assign  the video file path to the videoview
+            videoView.setVideoPath(getVideoPath(currentVideoIndex));
             videoView.seekTo(stopPosition);
             videoView.start();
         }
