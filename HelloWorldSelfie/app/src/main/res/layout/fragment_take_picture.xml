@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.videri.helloworldselfie.TakePictureFragment">
+
+
+<Button
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:id="@+id/button_one"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="READY?"
+    android:textColor="@color/LIGHTBLUE"
+    android:id="@+id/TextViewCountDown"
+
+    android:textSize="30dp"
+    android:layout_marginBottom="201dp"
+    android:layout_above="@+id/button_one"
+    android:layout_centerHorizontal="true" />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Fragment 1"
+    android:textColor="@color/LIGHTBLUE"
+    android:id="@+id/textView"
+    android:textSize="30dp"
+    android:layout_alignTop="@+id/TextViewCountDown"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="51dp" />
+
+<!--<ImageView-->
+<!--android:layout_width="80dp"-->
+<!--android:layout_height="100dp"-->
+<!--android:id="@+id/imageViewCountDown"-->
+<!--android:layout_alignTop="@+id/TextViewCountDown"-->
+<!--android:layout_centerHorizontal="true"-->
+<!--android:layout_marginTop="69dp" />-->
+
+</RelativeLayout>
