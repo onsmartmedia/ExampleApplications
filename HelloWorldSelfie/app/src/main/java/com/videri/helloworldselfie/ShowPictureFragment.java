@@ -7,8 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+
 
 /**
  * Created by Ayalus on 6/10/16.
@@ -17,7 +17,7 @@ public class ShowPictureFragment extends Fragment {
 
 
     private View view;
-    private ImageButton backBtn;
+    private ImageView backBtn;
     private ImageView BGImageSelfieTaken = null;
     private final String TAG = "ShowPictureFragment----";
     public String imagePath = "";
@@ -30,12 +30,15 @@ public class ShowPictureFragment extends Fragment {
         BGImageSelfieTaken = (ImageView) view.findViewById(R.id.bg_image2); //background image using glide (util class)
         Util.loadImage(getActivity(),BGImageSelfieTaken,R.drawable.bg_selfie_2);
 
+
         ImageView imageCapturd = (ImageView) view.findViewById(R.id.image_captured);
-        Util.loadImage(getActivity(),imageCapturd,imagePath);
+
+        Util.loadImageAsBitmap(getActivity(),imageCapturd,imagePath); //Get image, flip it and return to present.
+
 
         Log.v(TAG, "inflated fragment 2. now listening to button 2.");
 
-        backBtn = (ImageButton) view.findViewById(R.id.back_button); //back imageButton using glide (util class)
+        backBtn = (ImageView) view.findViewById(R.id.back_button); //back imageButton using glide (util class)
         Util.loadImage(getActivity(),backBtn,R.drawable.back_button);
 
         backBtn.setOnClickListener(buttonTwoListner);
@@ -58,7 +61,6 @@ public class ShowPictureFragment extends Fragment {
         Log.v(TAG, "onResume..................");
     }
 
-
     @Override
     public void onStop() {
         super.onStop();
@@ -68,11 +70,8 @@ public class ShowPictureFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //     Log.v(TAG, "onDestroy..................");
+//     Log.v(TAG, "onDestroy..................");
     }
-
-
-
 
     public void changeImagePath(String data){
         Log.v(TAG, "Check image path: " + data);

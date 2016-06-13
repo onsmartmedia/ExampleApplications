@@ -15,6 +15,7 @@ import java.util.List;
  * Created by Ayalus on 6/7/16.
  */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+    private static final String TAG ="CameraPreview------" ;
     //public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
     private static boolean DEBUGGING = true;
     private SurfaceHolder mHolder;
@@ -32,6 +33,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public CameraPreview(Context context, int cameraId, Camera camera) {
         super(context);
 
+        openCamera(context,cameraId,camera);
+    }
+
+    public void openCamera(Context context, int cameraId, Camera camera){
         mActivity = (MainActivity) context; //OR TAKEPICTUREFRAGMENT.java here???
         mHolder = getHolder();
         mHolder.addCallback(this);
@@ -57,11 +62,22 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mPictureSizeList = cameraParams.getSupportedPictureSizes();
         }
     }
-
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try {
-            mCamera.setPreviewDisplay(mHolder);
+            if (mCamera == null) {
+                Log.v(TAG, "mCamera is null");
+//                mHolder.removeCallback(this);
+                openCamera(mActivity,mCameraId,mCamera);
+
+            }
+            else
+                mCamera.setPreviewDisplay(mHolder);
+//            if (mHolder == null){
+//                Log.v(TAG, "mHolder is null");
+//            }
+
+
         } catch (IOException e) {
             mCamera.release();
             mCamera = null;
@@ -70,30 +86,32 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-        mCamera.stopPreview();
-        boolean portrait = isPortrait();
-        Camera.Size previewSize = determinePreviewSize(portrait, w, h);
-        Camera.Size pictureSize = determinePictureSize(previewSize);
-        if (mHolder== null) {
-            return;
-        }
-        try {
-            if (mCamera != null) {
-                Camera.Parameters cameraParams = mCamera.getParameters();
-                //hard-coding previewSize and pictureSize because of problems with HAL
-                //               cameraParams.setPreviewSize(previewSize.width, previewSize.height);
-                //               cameraParams.setPictureSize(pictureSize.width, pictureSize.height);
-
-                cameraParams.setPreviewSize(1280, 720);
-                cameraParams.setPictureSize(1280, 720);
-                cameraParams.setJpegQuality(100);//highest quality
-
-                mCamera.setParameters(cameraParams);
-                mCamera.setPreviewDisplay(holder);
-                mCamera.startPreview();
+        if(mCamera != null) {
+            mCamera.stopPreview();
+            boolean portrait = isPortrait();
+            Camera.Size previewSize = determinePreviewSize(portrait, w, h);
+            Camera.Size pictureSize = determinePictureSize(previewSize);
+            if (mHolder == null) {
+                return;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                if (mCamera != null) {
+                    Camera.Parameters cameraParams = mCamera.getParameters();
+                    //hard-coding previewSize and pictureSize because of problems with HAL
+                    //               cameraParams.setPreviewSize(previewSize.width, previewSize.height);
+                    //               cameraParams.setPictureSize(pictureSize.width, pictureSize.height);
+
+                    cameraParams.setPreviewSize(1280, 720);
+                    cameraParams.setPictureSize(1280, 720);
+                    cameraParams.setJpegQuality(100);//highest quality
+
+                    mCamera.setParameters(cameraParams);
+                    mCamera.setPreviewDisplay(holder);
+                    mCamera.startPreview();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

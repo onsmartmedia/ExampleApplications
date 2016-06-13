@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -40,7 +39,7 @@ public class TakePictureFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private final String TAG = "Fragment One TAG-------";
     private View view;
-    private ImageButton  captureBtn;
+    private ImageView  captureBtn;
     private ImageView countDownImageView = null;
     private boolean isCountDown = false;
     private Handler mHandler;
@@ -56,7 +55,6 @@ public class TakePictureFragment extends Fragment {
     private boolean cameraFront = false;
     float currentVol, currentLeftVol, currentRightVol;
     float minLeftVol, minRightVol, maxLeftVol, maxRightVol;
-    Toast volumeToast;
     private TextView countDownView = null;
     private TextView mCameraInfo = null;
     private static boolean mCameraInfoShowing = false;
@@ -75,65 +73,48 @@ public class TakePictureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_take_picture, container, false);
-
         view = inflater.inflate(R.layout.fragment_take_picture, container, false);
         Log.v(TAG, "inflated fragment 1. now listening to button 1.");
 
-        backgroundImage = (ImageView) view.findViewById(R.id.bg_image);
-        Util.loadImage(getActivity(),backgroundImage,R.drawable.bg_selfie_1);
 
 
-
-        countDownView = (TextView)view.findViewById(R.id.TextViewCountDown);
-        //     countDownImageView = (ImageView)view.findViewById(R.id.imageViewCountDown);
-
-
-        mHandler = new Handler();
-
-
-        mHandler = new Handler();
-        countDownView = (TextView)view.findViewById(R.id.TextViewCountDown);
-        currentLeftVol = currentRightVol = 0.4f;
-        currentVol = currentLeftVol;
-        minLeftVol = minRightVol = 0.0f;
-        maxLeftVol = maxRightVol = 1.0f;
-
-
-
-        cameraId = findFrontFacingCamera();
-        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
-        try {
-            mCamera = Camera.open(cameraId);
-        } catch (RuntimeException rte) {
-            Toast toast = Toast.makeText(getActivity(), "Your device does not have a camera!", Toast.LENGTH_LONG);
-            toast.show();
-        }
-        if (mCamera != null) {
-            mPreview = new CameraPreview(getActivity(), cameraId, mCamera);
-            if (mPreview != null) {
-                mCamera = mPreview.getCamera();
-                RelativeLayout surfaceViewWithTextview = (RelativeLayout) view.findViewById(R.id.preview);
-                mCameraInfo = new TextView(getActivity());
-                mCameraInfo.setTextColor(Color.WHITE);
-                mCameraInfo.setBackgroundColor(0xFFCCCCCC);
-                mCameraInfo.getBackground().setAlpha(50);//0-255
-                mCameraInfo.setPadding(10, 10, 10, 10);
-                mCameraInfo.setVisibility(View.GONE);
-                surfaceViewWithTextview.addView(mCameraInfo);
-                if (mCameraInfoShowing) {
-                    showCameraInfo();
-                } else {
-                    hideCameraInfo();
-                }
-                cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
-                //I took out:
-                //          RelativeLayout.LayoutParams previewLayoutParamsRelative = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                //          cameraPreviewRelative.setLayoutParams(previewLayoutParamsRelative);
-                cameraPreviewRelative.addView(mPreview);
-                initialize();
-            }
-        }
+        initialize();
+//        resumeCameraActivity();
+//        cameraId = findFrontFacingCamera();
+//        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
+//        try {
+//            mCamera = Camera.open(cameraId);
+//        } catch (RuntimeException rte) {
+//            Toast toast = Toast.makeText(getActivity(), "Your device does not have a camera!", Toast.LENGTH_LONG);
+//            toast.show();
+//        }
+//        if (mCamera != null) {
+//            mPreview = new CameraPreview(getActivity(), cameraId, mCamera);
+//            if (mPreview != null) {
+//                mCamera = mPreview.getCamera();
+//                RelativeLayout surfaceViewWithTextview = (RelativeLayout) view.findViewById(R.id.preview);
+//                mCameraInfo = new TextView(getActivity());
+//                mCameraInfo.setTextColor(Color.WHITE);
+//                mCameraInfo.setBackgroundColor(0xFFCCCCCC);
+//                mCameraInfo.getBackground().setAlpha(50);//0-255
+//                mCameraInfo.setPadding(10, 10, 10, 10);
+//                mCameraInfo.setVisibility(View.GONE);
+//                surfaceViewWithTextview.addView(mCameraInfo);
+//                if (mCameraInfoShowing) {
+//                    showCameraInfo();
+//                } else {
+//                    hideCameraInfo();
+//                }
+//
+//                cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
+//                //I took out:
+//                //          RelativeLayout.LayoutParams previewLayoutParamsRelative = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//                //          cameraPreviewRelative.setLayoutParams(previewLayoutParamsRelative);
+//                cameraPreviewRelative.addView(mPreview);
+//
+//
+//            }
+//        }
         //listen for new usb devices
         mUsbReceiver = new BroadcastReceiver() {
             @Override
@@ -162,9 +143,9 @@ public class TakePictureFragment extends Fragment {
             sec--;
             countDownView.setText(String.valueOf(sec));
             Log.v(TAG, (String.valueOf(sec)));
-            if(sec == 0){
+            if(sec == 1){
+                mCamera.takePicture(null, null, pictureCallback);
 
-                ((MainActivity)getActivity()).changeFragment(2);
                 isCountDown = false;
                 sec = 4;
             }
@@ -174,26 +155,18 @@ public class TakePictureFragment extends Fragment {
     };
 
 
-    View.OnClickListener buttonOneListner = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.v(TAG, "button one pressed, now moving to fragment 2");
-            if(!isCountDown ) {
-                mHandler.post(TimerTask);
-//                ((MainActivity)getActivity()).changeFragment(2);
-
-                isCountDown = true;
-            }
-            ((MainActivity)getActivity()).respond("");//(pathOfPicture)
-
-        }
-    };
-
     @Override
     public void onPause() {
         super.onPause();
+
+//        mPlayer.release();
         Log.v(TAG, "onPause..................");
-//        releaseCamera();
+//        if(mCamera != null) {
+//            mCamera.setPreviewCallback(null);
+//            mCamera.release();
+//        }
+        releaseCamera();
+//        cameraPreviewRelative.removeView(mPreview);
         if(TimerTask != null)
             mHandler.removeCallbacks(TimerTask);
     }
@@ -201,49 +174,19 @@ public class TakePictureFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         Log.v(TAG, "onResume..................");
-//        resumeCameraActivity();
+        resumeCameraActivity();
+//        cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
+//        //I took out:
+//        //          RelativeLayout.LayoutParams previewLayoutParamsRelative = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        //          cameraPreviewRelative.setLayoutParams(previewLayoutParamsRelative);
+//        cameraPreviewRelative.addView(mPreview);
         if(isCountDown == true)
             mHandler.post(TimerTask);
 //        isCountDown = false;
     }
 
-    //in case the media server died
-    private void resumeCameraActivity() {
-        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
-        try {
-            mCamera = Camera.open(cameraId);
-        } catch (RuntimeException rte) {
-            Toast toast = Toast.makeText(getActivity(), "Your device does not have a camera!", Toast.LENGTH_LONG);
-            toast.show();
-        }
-        if (mCamera != null) {
-            mPreview = new CameraPreview(getActivity(), cameraId, mCamera);
-            if (mPreview != null) {
-                mCamera = mPreview.getCamera();
-                RelativeLayout surfaceViewWithTextview = (RelativeLayout) view.findViewById(R.id.preview);
-                mCameraInfo = new TextView(getActivity());
-                mCameraInfo.setTextColor(Color.WHITE);
-                mCameraInfo.setBackgroundColor(0xFFCCCCCC);
-                mCameraInfo.getBackground().setAlpha(50);//0-255
-                mCameraInfo.setPadding(10, 10, 10, 10);
-                mCameraInfo.setVisibility(View.GONE);
-                surfaceViewWithTextview.addView(mCameraInfo);
-                if (mCameraInfoShowing) {
-                    showCameraInfo();
-                } else {
-                    hideCameraInfo();
-                }
-                cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
-                //I took out:
-                //          RelativeLayout.LayoutParams previewLayoutParamsRelative = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                //          cameraPreviewRelative.setLayoutParams(previewLayoutParamsRelative);
-                cameraPreviewRelative.addView(mPreview);
-                initialize();
-            }
-        }
-    }
+
 
     @Override
     public void onStop() {
@@ -299,9 +242,6 @@ public class TakePictureFragment extends Fragment {
     }
 
 
-
-
-
     public int findBackFacingCamera() {
         if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::findBackFacingCamera()..."); }
         int numberOfCameras = Camera.getNumberOfCameras();
@@ -316,6 +256,7 @@ public class TakePictureFragment extends Fragment {
         }
         return cameraId;
     }
+
 
     Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
         @Override
@@ -335,6 +276,7 @@ public class TakePictureFragment extends Fragment {
 
                 try {
                     //write the file
+//                    mPlayer.start();
                     Log.v(TAG,"SAVING FILE NOW:");
                     fos = new FileOutputStream(pictureFile);
                     fos.write(copy);
@@ -343,7 +285,6 @@ public class TakePictureFragment extends Fragment {
                     Toast toast = Toast.makeText(getActivity(), "JPG saved: " + pictureFile.getName(), Toast.LENGTH_LONG);
                     toast.show();
                     pathOfPicture = pictureFile.getPath();
-                    // comm.respond(pathOfPicture);
                     ((MainActivity)getActivity()).respond(pathOfPicture);
                     ((MainActivity)getActivity()).changeFragment(2);
                     Log.v(TAG, "Picture Taken. now going to preview page to show the pictureCallback.....");
@@ -401,12 +342,20 @@ public class TakePictureFragment extends Fragment {
 
     public void initialize() {
         if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::initialize()..."); }
-//        ct.start();
-        captureBtn = (ImageButton) view.findViewById(R.id.button_capture);
+
+        captureBtn = (ImageView) view.findViewById(R.id.button_capture);
         Util.loadImage(getActivity(),captureBtn,R.drawable.capture);
 
         captureBtn.setOnClickListener(captureListener);
-//        captureBtn.setEnabled(true);
+
+        backgroundImage = (ImageView) view.findViewById(R.id.bg_image);
+        Util.loadImage(getActivity(),backgroundImage,R.drawable.bg_selfie_1);
+        countDownView = (TextView)view.findViewById(R.id.TextViewCountDown);
+
+        mHandler = new Handler();
+
+//        mPlayer = MediaPlayer.create(getActivity(), R.raw.automatic_camera);
+
 
     }
 
@@ -417,11 +366,12 @@ public class TakePictureFragment extends Fragment {
             if (DEBUGGING) { Log.v(TAG, "vCameraMainActivity::captureListener.onClick().. BUTTON CLICKED........"); }
                captureBtn.setEnabled(false);
 
-            //     mPlayer = MediaPlayer.create(getActivity(), R.raw.automatic_camera);
-            //      mPlayer.start();
-                  mCamera.takePicture(null, null, pictureCallback);
-//            ((MainActivity)getActivity()).respond("");//(pathOfPicture)
-//            ((MainActivity)getActivity()).changeFragment(2);
+            Log.v(TAG, "Timer count down clicked. 3-2-1-capture");
+            if(!isCountDown ) {
+                mHandler.post(TimerTask);
+
+                isCountDown = true;
+            }
 
         }
     };
@@ -449,8 +399,6 @@ public class TakePictureFragment extends Fragment {
     }
 
 
-
-
     private void hideCameraInfo() {
         if (DEBUGGING) { Log.v(TAG, "pdinh...vCameraMainActivity::hideCameraInfo()"); }
         if (mCameraInfo != null) {
@@ -460,6 +408,46 @@ public class TakePictureFragment extends Fragment {
             }
         }
     }
+
+    //in case the media server died
+    private void resumeCameraActivity() {
+        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
+        cameraId = findFrontFacingCamera();
+        try {
+            mCamera = Camera.open(cameraId);
+        } catch (RuntimeException rte) {
+            Toast toast = Toast.makeText(getActivity(), "Your device does not have a camera!", Toast.LENGTH_LONG);
+            toast.show();
+        }
+        if (mCamera != null) {
+            mPreview = new CameraPreview(getActivity(), cameraId, mCamera);
+            if (mPreview != null) {
+                mCamera = mPreview.getCamera();
+                RelativeLayout surfaceViewWithTextview = (RelativeLayout) view.findViewById(R.id.preview);
+                mCameraInfo = new TextView(getActivity());
+                mCameraInfo.setTextColor(Color.WHITE);
+                mCameraInfo.setBackgroundColor(0xFFCCCCCC);
+                mCameraInfo.getBackground().setAlpha(50);//0-255
+                mCameraInfo.setPadding(10, 10, 10, 10);
+                mCameraInfo.setVisibility(View.GONE);
+                surfaceViewWithTextview.addView(mCameraInfo);
+                if (mCameraInfoShowing) {
+                    showCameraInfo();
+                } else {
+                    hideCameraInfo();
+                }
+
+                cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
+                //I took out:
+                //          RelativeLayout.LayoutParams previewLayoutParamsRelative = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                //          cameraPreviewRelative.setLayoutParams(previewLayoutParamsRelative);
+                cameraPreviewRelative.addView(mPreview);
+            }
+        }
+    }
+
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
