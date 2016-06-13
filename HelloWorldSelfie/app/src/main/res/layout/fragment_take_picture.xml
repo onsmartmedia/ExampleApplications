@@ -31,13 +31,7 @@ tools:context="com.videri.helloworldselfie.TakePictureFragment">
 
     </RelativeLayout>
 
-    <ImageView
-        android:layout_width="180px"
-        android:layout_height="180px"
-        android:id="@+id/button_capture"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        />
+
 
 
     <TextView
@@ -46,7 +40,15 @@ tools:context="com.videri.helloworldselfie.TakePictureFragment">
         android:text="READY?"
         android:textColor="@color/LIGHTBLUE"
         android:id="@+id/TextViewCountDown"
-        android:textSize="30dp"
+        android:textSize="100px"
         android:layout_centerHorizontal="true"
         android:layout_alignBottom="@+id/buttonsLayout" />
+
+    <ImageView
+        android:layout_width="180px"
+        android:layout_height="180px"
+        android:id="@+id/button_capture"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100px"/>
 </RelativeLayout>

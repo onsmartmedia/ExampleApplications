@@ -165,10 +165,11 @@ public class TakePictureFragment extends Fragment {
 //            mCamera.setPreviewCallback(null);
 //            mCamera.release();
 //        }
-        releaseCamera();
+
 //        cameraPreviewRelative.removeView(mPreview);
         if(TimerTask != null)
             mHandler.removeCallbacks(TimerTask);
+        releaseCamera();
     }
 
     @Override
@@ -266,7 +267,6 @@ public class TakePictureFragment extends Fragment {
                 System.arraycopy(data, 0, copy, 0, data.length);
                 //make a new pictureCallback file
                 FileOutputStream fos = null;
-                Log.v(TAG, "pictureFile1: " + pictureFile);
                 pictureFile = getOutputJpegFile();
 //                    if (pictureFile == null) {
 //                        Toast noFileToast = Toast.makeText(getActivity(),"no file saved in pictureFile", Toast.LENGTH_LONG);
