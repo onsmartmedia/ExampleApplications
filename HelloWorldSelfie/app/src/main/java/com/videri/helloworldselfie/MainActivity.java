@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 
+///MAIN PROJECT TO WORK ON 6/12/16 by Ayal Fieldust
 
 public class MainActivity extends Activity {
 
@@ -52,7 +53,7 @@ public class MainActivity extends Activity {
 
     public void respond(String data) {
         Log.v(TAG, "Calling respond: " + data);
-        //       F2.changeImagePath(data);
+               F2.changeImagePath(data);
     }
 
 }
