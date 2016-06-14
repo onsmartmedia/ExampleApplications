@@ -5,23 +5,25 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context="com.videri.helloworldselfie.ShowPictureFragment"
     >
+    <ImageView
+        android:id="@+id/bg_image2"
+        android:layout_width="1080px"
+        android:layout_height="1920px"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom|center_horizontal"/>
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/image_captured"
+        android:layout_marginTop="2dp" />
 
-<Button
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:id="@+id/button_two"
-    android:layout_alignParentBottom="true"
-    android:layout_centerHorizontal="true" />
+    <ImageView
+        android:layout_width="180px"
+        android:layout_height="180px"
+        android:id="@+id/back_button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100px"/>
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Fragment 2"
-    android:textColor="@color/LIGHTBLUE"
-    android:id="@+id/textView2"
-    android:textSize="30dp"
-    android:layout_above="@+id/button_two"
-    android:layout_centerHorizontal="true"
-    android:layout_marginBottom="45dp" />
 </RelativeLayout>

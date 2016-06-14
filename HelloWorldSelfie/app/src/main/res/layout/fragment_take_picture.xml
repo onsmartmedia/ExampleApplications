@@ -6,43 +6,49 @@ android:layout_height="match_parent"
 tools:context="com.videri.helloworldselfie.TakePictureFragment">
 
 
-<Button
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:id="@+id/button_one"
-    android:layout_alignParentBottom="true"
-    android:layout_centerHorizontal="true"
-    />
+    <ImageView
+        android:id="@+id/bg_image"
+        android:layout_width="1080px"
+        android:layout_height="1920px"
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom|center_horizontal"/>
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="READY?"
-    android:textColor="@color/LIGHTBLUE"
-    android:id="@+id/TextViewCountDown"
 
-    android:textSize="30dp"
-    android:layout_marginBottom="201dp"
-    android:layout_above="@+id/button_one"
-    android:layout_centerHorizontal="true" />
+    <RelativeLayout
+            android:id="@+id/preview"
+            android:layout_width="fill_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="328dp">
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Fragment 1"
-    android:textColor="@color/LIGHTBLUE"
-    android:id="@+id/textView"
-    android:textSize="30dp"
-    android:layout_alignTop="@+id/TextViewCountDown"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="51dp" />
+    </RelativeLayout>
 
-<!--<ImageView-->
-<!--android:layout_width="80dp"-->
-<!--android:layout_height="100dp"-->
-<!--android:id="@+id/imageViewCountDown"-->
-<!--android:layout_alignTop="@+id/TextViewCountDown"-->
-<!--android:layout_centerHorizontal="true"-->
-<!--android:layout_marginTop="69dp" />-->
 
+    <RelativeLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1500px">
+
+    </RelativeLayout>
+
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="READY?"
+        android:textColor="@color/LIGHTBLUE"
+        android:id="@+id/TextViewCountDown"
+        android:textSize="100px"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/buttonsLayout" />
+
+    <ImageView
+        android:layout_width="180px"
+        android:layout_height="180px"
+        android:id="@+id/button_capture"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100px"/>
 </RelativeLayout>

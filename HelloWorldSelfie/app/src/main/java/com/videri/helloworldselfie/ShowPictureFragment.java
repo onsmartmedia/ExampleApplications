@@ -7,32 +7,41 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageView;
+
 
 /**
  * Created by Ayalus on 6/10/16.
  */
 public class ShowPictureFragment extends Fragment {
 
-    private final String TAG = "Fragment Two TAG--------";
+
     private View view;
-    private Button buttonTwo;
-    private TextView countDownView = null;
+    private ImageView backBtn;
+    private ImageView BGImageSelfieTaken = null;
+    private final String TAG = "ShowPictureFragment----";
+    public String imagePath = "";
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //        return super.onCreateView(inflater, container, savedInstanceState);
-
         view = inflater.inflate(R.layout.fragment_show_picture, container, false);
+
+        BGImageSelfieTaken = (ImageView) view.findViewById(R.id.bg_image2); //background image using glide (util class)
+        Util.loadImage(getActivity(),BGImageSelfieTaken,R.drawable.bg_selfie_2);
+
+
+        ImageView imageCapturd = (ImageView) view.findViewById(R.id.image_captured);
+
+        Util.loadImageAsBitmap(getActivity(),imageCapturd,imagePath); //Get image, flip it and return to present.
+
+
         Log.v(TAG, "inflated fragment 2. now listening to button 2.");
 
+        backBtn = (ImageView) view.findViewById(R.id.back_button); //back imageButton using glide (util class)
+        Util.loadImage(getActivity(),backBtn,R.drawable.back_button);
 
-        buttonTwo = (Button) view.findViewById(R.id.button_two);
-        buttonTwo.setOnClickListener(buttonTwoListner);
-
-
+        backBtn.setOnClickListener(buttonTwoListner);
         return view;
     }
 
@@ -41,10 +50,8 @@ public class ShowPictureFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Log.v(TAG, "button two pressed, now moving to fragment 1");
-
-//            ((MainActivity)getActivity()).respond("");//(pathOfPicture)
+            ((MainActivity)getActivity()).respond("");//(pathOfPicture)
             ((MainActivity)getActivity()).changeFragment(1);
-
         }
     };
 
@@ -53,12 +60,6 @@ public class ShowPictureFragment extends Fragment {
         super.onResume();
         Log.v(TAG, "onResume..................");
     }
-
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        Log.v(TAG, "onPause..................");
-//    }
 
     @Override
     public void onStop() {
@@ -69,16 +70,19 @@ public class ShowPictureFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //     Log.v(TAG, "onDestroy..................");
-
+//     Log.v(TAG, "onDestroy..................");
     }
 
+    public void changeImagePath(String data){
+        Log.v(TAG, "Check image path: " + data);
+        imagePath = data;
+    }
 
-
-
-
-
-
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        Log.v(TAG, "onPause..................");
+//    }
 
     /**
      * This interface must be implemented by activities that contain this
