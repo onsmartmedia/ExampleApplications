@@ -155,16 +155,16 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             reqPreviewHeight = reqWidth;
         }
 
-        if (DEBUGGING) {
-            Log.v(vCameraPreview, "Listing all supported preview sizes");
-            for (Camera.Size size : mPreviewSizeList) {
-                Log.v(vCameraPreview, "  w: " + size.width + ", h: " + size.height);
-            }
-            Log.v(vCameraPreview, "Listing all supported pictureCallback sizes");
-            for (Camera.Size size : mPictureSizeList) {
-                Log.v(vCameraPreview, "  w: " + size.width + ", h: " + size.height);
-            }
-        }
+//        if (DEBUGGING) {
+//            Log.v(vCameraPreview, "Listing all supported preview sizes");
+//            for (Camera.Size size : mPreviewSizeList) {
+//                Log.v(vCameraPreview, "  w: " + size.width + ", h: " + size.height);
+//            }
+//            Log.v(vCameraPreview, "Listing all supported pictureCallback sizes");
+//            for (Camera.Size size : mPictureSizeList) {
+//                Log.v(vCameraPreview, "  w: " + size.width + ", h: " + size.height);
+//            }
+//        }
 
         // Adjust surface size with the closest aspect-ratio
         float reqRatio = ((float) reqPreviewWidth) / reqPreviewHeight;
@@ -228,7 +228,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         // TODO Auto-generated method stub
-        stop();
+        Log.v(TAG, "surfaceDestroyed called.....");
+//        TakePictureFragment.isPreviewDestroyed = true;
+//        stop();
+        TakePictureFragment.releaseCamera();
     }
 
     public void stop() {
@@ -238,6 +241,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mCamera.stopPreview();
         mCamera.release();
         mCamera = null;
+
+
+
     }
 
     public boolean isPortrait() {

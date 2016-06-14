@@ -37,15 +37,15 @@ import java.util.Date;
 public class TakePictureFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-    private final String TAG = "Fragment One TAG-------";
+    private static final String TAG = "Fragment One TAG-------";
     private View view;
     private ImageView  captureBtn;
     private ImageView countDownImageView = null;
     private boolean isCountDown = false;
     private Handler mHandler;
     private int sec = 4;
-    private Camera mCamera = null;
-    private CameraPreview mPreview = null;
+    private static Camera mCamera = null;
+    private static CameraPreview mPreview = null;
     private Camera.PictureCallback mPicture;
 
     public String pathOfPicture = "";
@@ -64,6 +64,9 @@ public class TakePictureFragment extends Fragment {
     private static boolean DEBUGGING = true;
     private boolean usbConnected = false;
     private ImageView backgroundImage = null;
+
+    public static boolean isPreviewDestroyed =  true;
+
     public TakePictureFragment() {
         // Required empty public constructor
     }
@@ -169,14 +172,17 @@ public class TakePictureFragment extends Fragment {
 //        cameraPreviewRelative.removeView(mPreview);
         if(TimerTask != null)
             mHandler.removeCallbacks(TimerTask);
-        releaseCamera();
+
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume..................");
-        resumeCameraActivity();
+        captureBtn.setEnabled(true);
+        if(isPreviewDestroyed)
+            resumeCameraActivity();
 //        cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
 //        //I took out:
 //        //          RelativeLayout.LayoutParams previewLayoutParamsRelative = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -193,6 +199,8 @@ public class TakePictureFragment extends Fragment {
     public void onStop() {
         super.onStop();
         Log.v(TAG, "onStop..................");
+        releaseCamera();
+        isPreviewDestroyed = true;
     }
 
     @Override
@@ -213,7 +221,7 @@ public class TakePictureFragment extends Fragment {
 
 
 
-    private void releaseCamera() {
+    public static void releaseCamera() {
         if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::releaseCamera().."); }
         if (mPreview != null) {
             mPreview.stop();
@@ -365,13 +373,13 @@ public class TakePictureFragment extends Fragment {
             Log.v(TAG,"BUTTON CLICKED........" );
             if (DEBUGGING) { Log.v(TAG, "vCameraMainActivity::captureListener.onClick().. BUTTON CLICKED........"); }
                captureBtn.setEnabled(false);
-
-            Log.v(TAG, "Timer count down clicked. 3-2-1-capture");
-            if(!isCountDown ) {
-                mHandler.post(TimerTask);
-
-                isCountDown = true;
-            }
+            mCamera.takePicture(null, null, pictureCallback);
+//            Log.v(TAG, "Timer count down clicked. 3-2-1-capture");
+//            if(!isCountDown ) {
+//                mHandler.post(TimerTask);
+//
+//                isCountDown = true;
+//            }
 
         }
     };
@@ -413,12 +421,13 @@ public class TakePictureFragment extends Fragment {
     private void resumeCameraActivity() {
         if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
         cameraId = findFrontFacingCamera();
-        try {
-            mCamera = Camera.open(cameraId);
-        } catch (RuntimeException rte) {
-            Toast toast = Toast.makeText(getActivity(), "Your device does not have a camera!", Toast.LENGTH_LONG);
-            toast.show();
-        }
+        if(mCamera == null)
+            try {
+                mCamera = Camera.open(cameraId);
+            } catch (RuntimeException rte) {
+                Toast toast = Toast.makeText(getActivity(), "Your device does not have a camera!", Toast.LENGTH_LONG);
+                toast.show();
+            }
         if (mCamera != null) {
             mPreview = new CameraPreview(getActivity(), cameraId, mCamera);
             if (mPreview != null) {
@@ -443,6 +452,7 @@ public class TakePictureFragment extends Fragment {
                 //          cameraPreviewRelative.setLayoutParams(previewLayoutParamsRelative);
                 cameraPreviewRelative.addView(mPreview);
             }
+            isPreviewDestroyed = false;
         }
     }
 
