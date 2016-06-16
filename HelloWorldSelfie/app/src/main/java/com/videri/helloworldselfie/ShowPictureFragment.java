@@ -26,9 +26,8 @@ public class ShowPictureFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_show_picture, container, false);
-
         BGImageSelfieTaken = (ImageView) view.findViewById(R.id.bg_image2); //background image using glide (util class)
-        Util.loadImage(getActivity(),BGImageSelfieTaken,R.drawable.bg_selfie_2);
+        Util.loadImage(getActivity(),BGImageSelfieTaken,R.drawable.selfie_after);
 
 
         ImageView imageCapturd = (ImageView) view.findViewById(R.id.image_captured);
@@ -41,7 +40,9 @@ public class ShowPictureFragment extends Fragment {
         backBtn = (ImageView) view.findViewById(R.id.back_button); //back imageButton using glide (util class)
         Util.loadImage(getActivity(),backBtn,R.drawable.back_button);
 
+        backBtn.setEnabled(false);
         backBtn.setOnClickListener(buttonTwoListner);
+        backBtn.setEnabled(true);
         return view;
     }
 

@@ -19,8 +19,8 @@ tools:context="com.videri.helloworldselfie.ShowPictureFragment"
         android:layout_marginTop="2dp" />
 
     <ImageView
-        android:layout_width="180px"
-        android:layout_height="180px"
+        android:layout_width="250px"
+        android:layout_height="250px"
         android:id="@+id/back_button"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
