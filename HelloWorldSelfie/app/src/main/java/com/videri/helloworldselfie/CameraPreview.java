@@ -30,12 +30,57 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     protected List<Camera.Size> mPreviewSizeList;
     protected List<Camera.Size> mPictureSizeList;
 
+    public CameraPreview(Activity context) {
+        super(context);
+
+
+//        addView(mSurfaceView);
+        mActivity = context;
+        mHolder = getHolder();
+        mHolder.addCallback(this);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    }
     public CameraPreview(Context context, int cameraId, Camera camera) {
         super(context);
 
         openCamera(context,cameraId,camera);
     }
-
+    
+    public void setCamera(Camera camera,int id) {
+        mCamera = camera;
+        mCameraId = id;
+//        if (mCamera != null) {
+//            mPictureSizeList = mCamera.getParameters().getSupportedPreviewSizes();
+//            requestLayout();
+//
+//            // get Camera parameters
+//            Camera.Parameters params = mCamera.getParameters();
+//
+//            List<String> focusModes = params.getSupportedFocusModes();
+//            if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
+//                // set the focus mode
+//                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+//                // set Camera parameters
+//                mCamera.setParameters(params);
+//            }
+//        }
+        if (mCamera == null) {
+            try {
+                mCamera = Camera.open();
+            } catch (RuntimeException e) {
+                try {
+                    mCamera = Camera.open(0);
+                } catch (RuntimeException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        if (mCamera != null) {
+            Camera.Parameters cameraParams = mCamera.getParameters();
+            mPreviewSizeList = cameraParams.getSupportedPreviewSizes();
+            mPictureSizeList = cameraParams.getSupportedPictureSizes();
+        }
+    }
     public void openCamera(Context context, int cameraId, Camera camera){
         mActivity = (MainActivity) context; //OR TAKEPICTUREFRAGMENT.java here???
         mHolder = getHolder();
@@ -65,18 +110,20 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try {
-            if (mCamera == null) {
-                Log.v(TAG, "mCamera is null");
-//                mHolder.removeCallback(this);
-                openCamera(mActivity,mCameraId,mCamera);
-
-            }
-            else
-                mCamera.setPreviewDisplay(mHolder);
+//            if (mCamera == null) {
+//                Log.v(TAG, "mCamera is null");
+////                mHolder.removeCallback(this);
+//                openCamera(mActivity,mCameraId,mCamera);
+//
+//            }
+//            else
+//                mCamera.setPreviewDisplay(mHolder);
 //            if (mHolder == null){
 //                Log.v(TAG, "mHolder is null");
 //            }
-
+            if (mCamera != null) {
+                mCamera.setPreviewDisplay(holder);
+            }
 
         } catch (IOException e) {
             mCamera.release();
@@ -132,6 +179,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             Log.d(VIEW_LOG_TAG, "Error starting camera preview: " + e.getMessage());
         }
     }
+
 
     /**
      * @param portrait
@@ -231,7 +279,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Log.v(TAG, "surfaceDestroyed called.....");
 //        TakePictureFragment.isPreviewDestroyed = true;
 //        stop();
-        TakePictureFragment.releaseCamera();
+//        TakePictureFragment.releaseCamera();
+        if (mCamera != null) {
+            mCamera.stopPreview();
+        }
     }
 
     public void stop() {

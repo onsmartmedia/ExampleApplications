@@ -40,9 +40,9 @@ public class ShowPictureFragment extends Fragment {
         backBtn = (ImageView) view.findViewById(R.id.back_button); //back imageButton using glide (util class)
         Util.loadImage(getActivity(),backBtn,R.drawable.back_button);
 
-        backBtn.setEnabled(false);
+
         backBtn.setOnClickListener(buttonTwoListner);
-        backBtn.setEnabled(true);
+
         return view;
     }
 
@@ -51,6 +51,7 @@ public class ShowPictureFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Log.v(TAG, "button two pressed, now moving to fragment 1");
+            backBtn.setEnabled(false);
             ((MainActivity)getActivity()).respond("");//(pathOfPicture)
             ((MainActivity)getActivity()).changeFragment(1);
         }
@@ -60,6 +61,7 @@ public class ShowPictureFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume..................");
+        backBtn.setEnabled(true);
     }
 
     @Override
