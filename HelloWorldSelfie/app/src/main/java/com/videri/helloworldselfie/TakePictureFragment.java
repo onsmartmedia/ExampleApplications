@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.usb.UsbManager;
 import android.media.MediaPlayer;
@@ -16,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,7 +42,7 @@ public class TakePictureFragment extends Fragment {
     private ImageView countDownImageView = null;
     private boolean isCountDown = false;
     private Handler mHandler;
-    private int sec = 4;
+    private int takingPictureCountDown = 4;
     private static Camera mCamera = null;
     private static CameraPreview mPreview = null;
     private Camera.PictureCallback mPicture;
@@ -132,14 +130,14 @@ public class TakePictureFragment extends Fragment {
     private Runnable TimerTask = new Runnable() {
         @Override
         public void run() {
-            sec--;
-            countDownView.setText(String.valueOf(sec));
-            Log.v(TAG, (String.valueOf(sec)));
-            if(sec == 1){
+            takingPictureCountDown--;
+            countDownView.setText(String.valueOf(takingPictureCountDown));
+            Log.v(TAG, (String.valueOf(takingPictureCountDown)));
+            if(takingPictureCountDown == 1){
                 mPreview.getCamera().takePicture(null, null, pictureCallback);
 
                 isCountDown = false;
-                sec = 4;
+                takingPictureCountDown = 4;
             }
             else
                 mHandler.postDelayed(this,1000);
@@ -152,11 +150,11 @@ public class TakePictureFragment extends Fragment {
         super.onPause();
 
         Log.v(TAG, "onPause..................");
-        mPreview.stopPreview();
+//        mPreview.stopPreview();
         if(TimerTask != null) {
             mHandler.removeCallbacks(TimerTask);
         }
-        sec = 4;
+        takingPictureCountDown = 4;
 
 
     }
@@ -173,9 +171,11 @@ public class TakePictureFragment extends Fragment {
         catch (Exception e){
             Log.v(TAG,"OnResume error: "+ e.toString());
         }
+        if(isCountDown)
+            mHandler.post(TimerTask);
 //        if(isPreviewDestroyed)
         mPreview.startPreview();
-        isCountDown = false;
+
     }
 
 
@@ -184,7 +184,8 @@ public class TakePictureFragment extends Fragment {
     public void onStop() {
         super.onStop();
         Log.v(TAG, "onStop..................");
-
+        takingPictureCountDown = 4;
+        isCountDown = false;
     }
 
     @Override
