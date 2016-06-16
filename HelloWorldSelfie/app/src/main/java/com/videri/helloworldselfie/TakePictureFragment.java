@@ -153,7 +153,7 @@ public class TakePictureFragment extends Fragment {
 
 
         Log.v(TAG, "onPause..................");
-        countDownView.setText("Ready?");
+
         if(TimerTask != null) {
             mHandler.removeCallbacks(TimerTask);
         }
@@ -167,12 +167,16 @@ public class TakePictureFragment extends Fragment {
         super.onResume();
         Log.v(TAG, "onResume..................");
 
-        if(countDownView != null)
+        try {
             countDownView.setText("Ready?");
-        captureBtn.setEnabled(true);
+            captureBtn.setEnabled(true);
+        }
+        catch (Exception e){
+            Log.v(TAG,"Onresume error: "+ e.toString());
+        }
 //        if(isPreviewDestroyed)
         resumeCameraActivity();
-
+        isCountDown = false;
     }
 
 
