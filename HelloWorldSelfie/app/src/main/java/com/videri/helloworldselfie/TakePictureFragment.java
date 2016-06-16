@@ -29,10 +29,10 @@ import java.util.Date;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link TakePictureFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
+ * 6/15/16
+ * Ayal Fieldust
+ * Videri - Camera Demo
+ * HelloWorldSelfie
  */
 public class TakePictureFragment extends Fragment {
 
@@ -53,8 +53,7 @@ public class TakePictureFragment extends Fragment {
     private MediaPlayer mPlayer;
     private RelativeLayout cameraPreviewRelative;
     private boolean cameraFront = false;
-    float currentVol, currentLeftVol, currentRightVol;
-    float minLeftVol, minRightVol, maxLeftVol, maxRightVol;
+
     private TextView countDownView = null;
     private TextView mCameraInfo = null;
     private static boolean mCameraInfoShowing = false;
@@ -64,9 +63,7 @@ public class TakePictureFragment extends Fragment {
     private static boolean DEBUGGING = true;
     private boolean usbConnected = false;
     private ImageView backgroundImage = null;
-
     public static boolean isPreviewDestroyed =  true;
-
     public TakePictureFragment() {
         // Required empty public constructor
     }
@@ -170,8 +167,10 @@ public class TakePictureFragment extends Fragment {
 //        }
 
 //        cameraPreviewRelative.removeView(mPreview);
-        if(TimerTask != null)
+        if(TimerTask != null) {
             mHandler.removeCallbacks(TimerTask);
+        }
+        sec = 4;
 
 
     }
@@ -180,6 +179,8 @@ public class TakePictureFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.v(TAG, "onResume..................");
+        if(countDownView != null)
+      //      countDownView.setText("Ready?");
         captureBtn.setEnabled(true);
         if(isPreviewDestroyed)
             resumeCameraActivity();
@@ -199,7 +200,7 @@ public class TakePictureFragment extends Fragment {
     public void onStop() {
         super.onStop();
         Log.v(TAG, "onStop..................");
-        releaseCamera();
+      //  releaseCamera();
         isPreviewDestroyed = true;
     }
 
@@ -230,6 +231,7 @@ public class TakePictureFragment extends Fragment {
         }
         // stop and release camera
         if (mCamera != null) {
+            Log.d(TAG, "mCamera.release() called");
             mCamera.release();
             mCamera = null;
         }
@@ -284,7 +286,7 @@ public class TakePictureFragment extends Fragment {
 
                 try {
                     //write the file
-//                    mPlayer.start();
+                    mPlayer.start();
                     Log.v(TAG,"SAVING FILE NOW:");
                     fos = new FileOutputStream(pictureFile);
                     fos.write(copy);
@@ -357,12 +359,12 @@ public class TakePictureFragment extends Fragment {
         captureBtn.setOnClickListener(captureListener);
 
         backgroundImage = (ImageView) view.findViewById(R.id.bg_image);
-        Util.loadImage(getActivity(),backgroundImage,R.drawable.bg_selfie_1);
+        Util.loadImage(getActivity(),backgroundImage,R.drawable.selfie_before);
         countDownView = (TextView)view.findViewById(R.id.TextViewCountDown);
 
         mHandler = new Handler();
 
-//        mPlayer = MediaPlayer.create(getActivity(), R.raw.automatic_camera);
+        mPlayer = MediaPlayer.create(getActivity(), R.raw.automatic_camera);
 
 
     }
@@ -373,13 +375,13 @@ public class TakePictureFragment extends Fragment {
             Log.v(TAG,"BUTTON CLICKED........" );
             if (DEBUGGING) { Log.v(TAG, "vCameraMainActivity::captureListener.onClick().. BUTTON CLICKED........"); }
                captureBtn.setEnabled(false);
-            mCamera.takePicture(null, null, pictureCallback);
-//            Log.v(TAG, "Timer count down clicked. 3-2-1-capture");
-//            if(!isCountDown ) {
-//                mHandler.post(TimerTask);
-//
-//                isCountDown = true;
-//            }
+//            mCamera.takePicture(null, null, pictureCallback);
+            Log.v(TAG, "Timer count down clicked. 3-2-1-capture");
+            if(!isCountDown ) {
+                mHandler.post(TimerTask);
+
+                isCountDown = true;
+            }
 
         }
     };
