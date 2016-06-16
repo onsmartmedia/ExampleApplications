@@ -46,27 +46,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         openCamera(context,cameraId,camera);
     }
     
-    public void setCamera(Camera camera,int id) {
-        mCamera = camera;
+    public void setCamera(int id) {
         mCameraId = id;
-//        if (mCamera != null) {
-//            mPictureSizeList = mCamera.getParameters().getSupportedPreviewSizes();
-//            requestLayout();
-//
-//            // get Camera parameters
-//            Camera.Parameters params = mCamera.getParameters();
-//
-//            List<String> focusModes = params.getSupportedFocusModes();
-//            if (focusModes.contains(Camera.Parameters.FOCUS_MODE_AUTO)) {
-//                // set the focus mode
-//                params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-//                // set Camera parameters
-//                mCamera.setParameters(params);
-//            }
-//        }
         if (mCamera == null) {
             try {
-                mCamera = Camera.open();
+                mCamera = Camera.open(mCameraId);
             } catch (RuntimeException e) {
                 try {
                     mCamera = Camera.open(0);
@@ -76,11 +60,15 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             }
         }
         if (mCamera != null) {
+
             Camera.Parameters cameraParams = mCamera.getParameters();
             mPreviewSizeList = cameraParams.getSupportedPreviewSizes();
             mPictureSizeList = cameraParams.getSupportedPictureSizes();
+
         }
+
     }
+
     public void openCamera(Context context, int cameraId, Camera camera){
         mActivity = (MainActivity) context; //OR TAKEPICTUREFRAGMENT.java here???
         mHolder = getHolder();
@@ -105,6 +93,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             Camera.Parameters cameraParams = mCamera.getParameters();
             mPreviewSizeList = cameraParams.getSupportedPreviewSizes();
             mPictureSizeList = cameraParams.getSupportedPictureSizes();
+        }
+    }
+
+    public void startPreview(){
+        if(mCamera != null)
+            mCamera.startPreview();
+        else{
+            setCamera(0);
         }
     }
     @Override
@@ -280,20 +276,23 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 //        TakePictureFragment.isPreviewDestroyed = true;
 //        stop();
 //        TakePictureFragment.releaseCamera();
-        if (mCamera != null) {
+        stopCamera();
+    }
+    public  void stopPreview() {
+        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::stopPreview().."); }
+
+        if(mCamera != null) {
             mCamera.stopPreview();
         }
     }
 
-    public void stop() {
+    public void stopCamera() {
         if (mCamera == null) {
             return;
         }
         mCamera.stopPreview();
         mCamera.release();
         mCamera = null;
-
-
 
     }
 

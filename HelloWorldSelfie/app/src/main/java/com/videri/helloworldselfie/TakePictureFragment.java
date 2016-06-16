@@ -60,7 +60,7 @@ public class TakePictureFragment extends Fragment {
     private TextView mCameraInfo = null;
     private static boolean mCameraInfoShowing = false;
     private static final int TAKE_PHOTO_CODE = 100;
-    private static int cameraId = -1;
+    private static int cameraId = 0;
     BroadcastReceiver mUsbReceiver = null;
     private static boolean DEBUGGING = true;
     private boolean usbConnected = false;
@@ -115,7 +115,8 @@ public class TakePictureFragment extends Fragment {
                     Toast toast = Toast.makeText(getActivity(), "Camera removed!", Toast.LENGTH_LONG);
                     toast.show();
                     usbConnected = false;
-                    releaseCamera();
+//                    releaseCamera();
+                    mPreview.stopCamera();
                 }
             }
         };
@@ -148,12 +149,10 @@ public class TakePictureFragment extends Fragment {
 
     @Override
     public void onPause() {
-        releaseCamera();
         super.onPause();
 
-
         Log.v(TAG, "onPause..................");
-
+        mPreview.stopPreview();
         if(TimerTask != null) {
             mHandler.removeCallbacks(TimerTask);
         }
@@ -172,10 +171,10 @@ public class TakePictureFragment extends Fragment {
             captureBtn.setEnabled(true);
         }
         catch (Exception e){
-            Log.v(TAG,"Onresume error: "+ e.toString());
+            Log.v(TAG,"OnResume error: "+ e.toString());
         }
 //        if(isPreviewDestroyed)
-        resumeCameraActivity();
+        mPreview.startPreview();
         isCountDown = false;
     }
 
@@ -185,6 +184,7 @@ public class TakePictureFragment extends Fragment {
     public void onStop() {
         super.onStop();
         Log.v(TAG, "onStop..................");
+
     }
 
     @Override
@@ -197,18 +197,27 @@ public class TakePictureFragment extends Fragment {
 
 
 
-    public static void releaseCamera() {
-        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::releaseCamera().."); }
 
-        if(mCamera != null) {
-            mCamera.stopPreview();
-            mPreview.setCamera(null,-1);
-            mCamera.release();
-            mCamera = null;
-        }
+    //in case the media server died
+//    private void resumeCameraActivity() {
+//        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
+//        if(mCamera == null) {
+//            if (DEBUGGING) { Log.d(TAG, "Camera is null initializing."); }
+//            cameraId = findFrontFacingCamera();
+//            try {
+//                mCamera = Camera.open(cameraId);
+//                mPreview.setCamera(mCamera, cameraId);
+//            } catch (RuntimeException ex) {
+////            Toast.makeText(getActivity(),
+////                    "Your device does not have a camera! " + ex.toString(), Toast.LENGTH_LONG).show();
+//                Log.v(TAG, "Camera init error: " + ex.toString());
+//            }
+//        }
+//        else
+//            if (DEBUGGING) { Log.d(TAG, "Camera is not null initializing."); }
+//        mCamera.startPreview();
+//    }
 
-
-    }
     public int findFrontFacingCamera() {
         if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::findFrontFacingCamera()..."); }
         // Search for the front facing camera
@@ -342,13 +351,24 @@ public class TakePictureFragment extends Fragment {
         cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
         mPreview = new CameraPreview(getActivity());
         cameraPreviewRelative.addView(mPreview);
-
+        mPreview.setCamera(0);
     }
 
+    boolean isCameraStarted = true;
     View.OnClickListener captureListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Log.v(TAG,"BUTTON CLICKED........" );
+
+//            if(isCameraStarted){
+//                mPreview.stopPreview();
+//                isCameraStarted = false;
+//            }
+//            else{
+//                mPreview.startPreview();
+//                isCameraStarted = true;
+//            }
+
             if (DEBUGGING) { Log.v(TAG, "vCameraMainActivity::captureListener.onClick().. BUTTON CLICKED........"); }
                captureBtn.setEnabled(false);
 //            mCamera.takePicture(null, null, pictureCallback);
@@ -397,39 +417,7 @@ public class TakePictureFragment extends Fragment {
 
 
 
-    //in case the media server died
-    private void resumeCameraActivity() {
-        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
-        cameraId = findFrontFacingCamera();
-        try{
-            mCamera = Camera.open(cameraId);
-            mCamera.startPreview();
-            mPreview.setCamera(mCamera,cameraId);
-        } catch (RuntimeException ex){
-//            Toast.makeText(getActivity(),
-//                    "Your device does not have a camera! " + ex.toString(), Toast.LENGTH_LONG).show();
-            Log.v(TAG, "Camera init error: " + ex.toString());
-        }
-//        if(mCamera == null)
-//            try {
-//                mCamera = Camera.open(cameraId);
-//            } catch (RuntimeException rte) {
-//                Toast toast = Toast.makeText(getActivity(), "Your device does not have a camera!", Toast.LENGTH_LONG);
-//                toast.show();
-//            }
-//        if (mCamera != null) {
-//            mPreview = new CameraPreview(getActivity(), cameraId, mCamera);
-//            if (mPreview != null) {
-//                mCamera = mPreview.getCamera();
 
-//                cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
-//                //I took out:
-//                //          RelativeLayout.LayoutParams previewLayoutParamsRelative = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//                //          cameraPreviewRelative.setLayoutParams(previewLayoutParamsRelative);
-//                cameraPreviewRelative.addView(mPreview);
-//            }
-//        }
-    }
 
 
 
