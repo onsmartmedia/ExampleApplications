@@ -136,7 +136,7 @@ public class TakePictureFragment extends Fragment {
             countDownView.setText(String.valueOf(sec));
             Log.v(TAG, (String.valueOf(sec)));
             if(sec == 1){
-                mCamera.takePicture(null, null, pictureCallback);
+                mPreview.getCamera().takePicture(null, null, pictureCallback);
 
                 isCountDown = false;
                 sec = 4;
