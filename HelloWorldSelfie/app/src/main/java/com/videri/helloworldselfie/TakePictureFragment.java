@@ -200,8 +200,8 @@ public class TakePictureFragment extends Fragment {
                     fos.write(copy);
                     fos.flush();
                     fos.close();
-                    Toast toast = Toast.makeText(getActivity(), "JPG saved: " + pictureFile.getName(), Toast.LENGTH_LONG);
-                    toast.show();
+//                    Toast toast = Toast.makeText(getActivity(), "JPG saved: " + pictureFile.getName(), Toast.LENGTH_LONG);
+//                    toast.show();
                     pathOfPicture = pictureFile.getPath();
                     ((MainActivity)getActivity()).respond(pathOfPicture);
                     ((MainActivity)getActivity()).changeFragment(2);
