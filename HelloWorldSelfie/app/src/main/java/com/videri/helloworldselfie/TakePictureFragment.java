@@ -32,6 +32,12 @@ import java.util.Date;
  * Ayal Fieldust
  * Videri - Camera Demo
  * HelloWorldSelfie
+ *
+ * Description: This Demo is a base app for anyone trying to build a camera app for the Videri screens.
+ * Things to keep in mind:
+ * As of 6/17/16 the current level of API is 18, so only Camera V1 is usable at this point.
+ * The Videri-ops scheduler will call onPause, onStop, and onResume, when switching between  apps so notice that the camera preview works properly.
+ *
  */
 public class TakePictureFragment extends Fragment {
 
@@ -39,33 +45,33 @@ public class TakePictureFragment extends Fragment {
     private static final String TAG = "Fragment One TAG-------";
     private View view;
     private ImageView  captureBtn;
-    private ImageView countDownImageView = null;
     private boolean isCountDown = false;
     private Handler mHandler;
     private int takingPictureCountDown = 4;
     private static Camera mCamera = null;
     private static CameraPreview mPreview = null;
-    private Camera.PictureCallback mPicture;
-
     public String pathOfPicture = "";
     public File pictureFile = null;
     private MediaPlayer mPlayer;
     private RelativeLayout cameraPreviewRelative;
-
-    private boolean cameraFront = false;
-
     private TextView countDownView = null;
     private TextView mCameraInfo = null;
-    private static boolean mCameraInfoShowing = false;
-    private static final int TAKE_PHOTO_CODE = 100;
     private static int cameraId = 0;
     BroadcastReceiver mUsbReceiver = null;
     private static boolean DEBUGGING = true;
-    private boolean usbConnected = false;
     private ImageView backgroundImage = null;
     public TakePictureFragment() {
         // Required empty public constructor
     }
+
+    private ImageView countDownImageView = null;
+    private Camera.PictureCallback mPicture;
+    private boolean usbConnected = false;
+    private static boolean mCameraInfoShowing = false;
+    private static final int TAKE_PHOTO_CODE = 100;
+    private boolean cameraFront = false;
+
+
 
 
     @Override
@@ -75,34 +81,6 @@ public class TakePictureFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_take_picture, container, false);
         Log.v(TAG, "inflated fragment 1. now listening to button 1.");
 
-
-
-
-//        resumeCameraActivity();
-//        cameraId = findFrontFacingCamera();
-//        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
-//        try {
-//            mCamera = Camera.open(cameraId);
-//        } catch (RuntimeException rte) {
-//            Toast toast = Toast.makeText(getActivity(), "Your device does not have a camera!", Toast.LENGTH_LONG);
-//            toast.show();
-//        }
-//        if (mCamera != null) {
-//            mPreview = new CameraPreview(getActivity(), cameraId, mCamera);
-//            if (mPreview != null) {
-//                mCamera = mPreview.getCamera();
-//
-
-//
-//                cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
-//                //I took out:
-//                //          RelativeLayout.LayoutParams previewLayoutParamsRelative = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//                //          cameraPreviewRelative.setLayoutParams(previewLayoutParamsRelative);
-//                cameraPreviewRelative.addView(mPreview);
-//
-//
-//            }
-//        }
         //listen for new usb devices
         mUsbReceiver = new BroadcastReceiver() {
             @Override
@@ -113,7 +91,6 @@ public class TakePictureFragment extends Fragment {
                     Toast toast = Toast.makeText(getActivity(), "Camera removed!", Toast.LENGTH_LONG);
                     toast.show();
                     usbConnected = false;
-//                    releaseCamera();
                     mPreview.stopCamera();
                 }
             }
@@ -123,7 +100,6 @@ public class TakePictureFragment extends Fragment {
         getActivity().registerReceiver(mUsbReceiver, filter);
         saveLogcatToFile(getActivity());
         initialize();
-//added until here
         return view;
     }
 
@@ -155,7 +131,7 @@ public class TakePictureFragment extends Fragment {
             mHandler.removeCallbacks(TimerTask);
         }
         takingPictureCountDown = 4;
-
+//        mPlayer.release();
 
     }
 
@@ -175,7 +151,6 @@ public class TakePictureFragment extends Fragment {
             mHandler.post(TimerTask);
 //        if(isPreviewDestroyed)
         mPreview.startPreview();
-
     }
 
 
@@ -199,57 +174,7 @@ public class TakePictureFragment extends Fragment {
 
 
 
-    //in case the media server died
-//    private void resumeCameraActivity() {
-//        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
-//        if(mCamera == null) {
-//            if (DEBUGGING) { Log.d(TAG, "Camera is null initializing."); }
-//            cameraId = findFrontFacingCamera();
-//            try {
-//                mCamera = Camera.open(cameraId);
-//                mPreview.setCamera(mCamera, cameraId);
-//            } catch (RuntimeException ex) {
-////            Toast.makeText(getActivity(),
-////                    "Your device does not have a camera! " + ex.toString(), Toast.LENGTH_LONG).show();
-//                Log.v(TAG, "Camera init error: " + ex.toString());
-//            }
-//        }
-//        else
-//            if (DEBUGGING) { Log.d(TAG, "Camera is not null initializing."); }
-//        mCamera.startPreview();
-//    }
 
-    public int findFrontFacingCamera() {
-        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::findFrontFacingCamera()..."); }
-        // Search for the front facing camera
-        int numberOfCameras = Camera.getNumberOfCameras();
-        for (int i = 0; i < numberOfCameras; i++) {
-            Camera.CameraInfo info = new Camera.CameraInfo();
-            Camera.getCameraInfo(i, info);
-            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                cameraId = i;
-                cameraFront = true;
-                break;
-            }
-        }
-        return cameraId;
-    }
-
-
-    public int findBackFacingCamera() {
-        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::findBackFacingCamera()..."); }
-        int numberOfCameras = Camera.getNumberOfCameras();
-        for (int i = 0; i < numberOfCameras; i++) {
-            Camera.CameraInfo info = new Camera.CameraInfo();
-            Camera.getCameraInfo(i, info);
-            if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                cameraId = i;
-                cameraFront = false;
-                break;
-            }
-        }
-        return cameraId;
-    }
 
 
     Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
@@ -383,8 +308,58 @@ public class TakePictureFragment extends Fragment {
         }
     };
 
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
+
+
+
+
+    //TO DELETE:
+
+//        resumeCameraActivity();
+//        cameraId = findFrontFacingCamera();
+//        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
+//        try {
+//            mCamera = Camera.open(cameraId);
+//        } catch (RuntimeException rte) {
+//            Toast toast = Toast.makeText(getActivity(), "Your device does not have a camera!", Toast.LENGTH_LONG);
+//            toast.show();
+//        }
+//        if (mCamera != null) {
+//            mPreview = new CameraPreview(getActivity(), cameraId, mCamera);
+//            if (mPreview != null) {
+//                mCamera = mPreview.getCamera();
+//
+
+//
+//                cameraPreviewRelative = (RelativeLayout) view.findViewById(R.id.preview);
+//                //I took out:
+//                //          RelativeLayout.LayoutParams previewLayoutParamsRelative = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//                //          cameraPreviewRelative.setLayoutParams(previewLayoutParamsRelative);
+//                cameraPreviewRelative.addView(mPreview);
+//
+//
+//            }
+//        }
+
+
+
     private void showCameraInfo() {
-        if (DEBUGGING) { Log.v(TAG, "pdinh...vCameraMainActivity::showCameraInfo()"); }
+        if (DEBUGGING) { Log.v(TAG, "vCameraMainActivity::showCameraInfo()"); }
         if (mCamera != null) {
             StringBuilder strBuilder = new StringBuilder();
             strBuilder.append("Focus mode: " + mCamera.getParameters().getFocusMode() + "\n");
@@ -407,7 +382,7 @@ public class TakePictureFragment extends Fragment {
 
 
     private void hideCameraInfo() {
-        if (DEBUGGING) { Log.v(TAG, "pdinh...vCameraMainActivity::hideCameraInfo()"); }
+        if (DEBUGGING) { Log.v(TAG, "vCameraMainActivity::hideCameraInfo()"); }
         if (mCameraInfo != null) {
             if (mCameraInfo.getVisibility() != View.GONE) {
                 mCameraInfo.setVisibility(View.GONE);
@@ -415,25 +390,55 @@ public class TakePictureFragment extends Fragment {
             }
         }
     }
+    //in case the media server died
+//    private void resumeCameraActivity() {
+//        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::resumeCameraActivity()..."); }
+//        if(mCamera == null) {
+//            if (DEBUGGING) { Log.d(TAG, "Camera is null initializing."); }
+//            cameraId = findFrontFacingCamera();
+//            try {
+//                mCamera = Camera.open(cameraId);
+//                mPreview.setCamera(mCamera, cameraId);
+//            } catch (RuntimeException ex) {
+////            Toast.makeText(getActivity(),
+////                    "Your device does not have a camera! " + ex.toString(), Toast.LENGTH_LONG).show();
+//                Log.v(TAG, "Camera init error: " + ex.toString());
+//            }
+//        }
+//        else
+//            if (DEBUGGING) { Log.d(TAG, "Camera is not null initializing."); }
+//        mCamera.startPreview();
+//    }
+
+    public int findFrontFacingCamera() {
+        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::findFrontFacingCamera()..."); }
+        // Search for the front facing camera
+        int numberOfCameras = Camera.getNumberOfCameras();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                cameraId = i;
+                cameraFront = true;
+                break;
+            }
+        }
+        return cameraId;
+    }
 
 
-
-
-
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public int findBackFacingCamera() {
+        if (DEBUGGING) { Log.d(TAG, "vCameraMainActivity::findBackFacingCamera()..."); }
+        int numberOfCameras = Camera.getNumberOfCameras();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(i, info);
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                cameraId = i;
+                cameraFront = false;
+                break;
+            }
+        }
+        return cameraId;
     }
 }

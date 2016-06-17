@@ -29,8 +29,6 @@ public class Util {
     }
 
 
-
-
     public static void loadImageAsBitmap(final Context context, final ImageView imageView, Object source){
         Glide
                 .with(context)
@@ -42,21 +40,8 @@ public class Util {
                         imageView.setImageBitmap(flipImage(resource)); // Possibly runOnUiThread()
                     }
                 });
-//        Bitmap theBitmap = null;
-//        try {
-//            theBitmap = Glide.
-//                    with(context).
-//                    load(source).
-//                    asBitmap().
-//                    into(-1, -1). // Width and height
-//                    get();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//        return theBitmap;
     }
+
 
     public static Bitmap flipImage(Bitmap bmp){
         Matrix matrix = new Matrix();
@@ -64,10 +49,6 @@ public class Util {
         Bitmap mirroredBitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, false);
         return mirroredBitmap;
     }
-
-
-
-
 }
 
 
